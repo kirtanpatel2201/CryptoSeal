@@ -79,7 +79,7 @@ pdf-signature-tool/
 Clone the repository:
 
 ```
-git clone https://github.com/yourusername/CryptoSeal.git
+git clone https://github.com/kirtanpatel2201/CryptoSeal.git
 ```
 
 Navigate into the project directory:
@@ -117,7 +117,6 @@ http://127.0.0.1:5000
 
 
 ---
----
 
 # 🛠 Tech Stack
 
@@ -142,6 +141,7 @@ http://127.0.0.1:5000
 
 * Encrypted Vault Storage
 
+---
 
 # 📚 Educational Purpose
 
