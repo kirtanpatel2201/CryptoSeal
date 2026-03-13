@@ -8,18 +8,6 @@ The system allows users to sign documents and later verify their authenticity to
 
 ---
 
-# 🚀 Features
-
-* 📄 Sign documents using cryptographic hashing
-* 🔑 Public key generation for verification
-* 🔍 Verify document integrity
-* 🛡 Detect document tampering
-* 🔐 Secure encrypted vault for signature storage
-* ⚡ Lightweight web interface built using Flask
-* 🎨 Modern cybersecurity-themed UI
-
----
-
 # 🧠 How It Works
 
 CryptoSeal follows a simplified digital signature workflow:
@@ -62,31 +50,6 @@ Encrypted Vault Storage
    ▼
 Verification using Public Key
 ```
-
----
-
-# 🛠 Tech Stack
-
-**Backend**
-
-* Python
-* Flask
-
-**Cryptography Concepts**
-
-* SHA-256 Hashing
-* Asymmetric Key Concept
-* Digital Signature Workflow
-
-**Frontend**
-
-* HTML
-* CSS
-* JavaScript
-
-**Security**
-
-* Encrypted Vault Storage
 
 ---
 
@@ -145,22 +108,6 @@ http://127.0.0.1:5000
 
 ---
 
-# 📸 Application Workflow
-
-### Signing a Document
-
-1. Upload file
-2. Generate public key
-3. Store signature securely
-
-### Verifying a Document
-
-1. Upload file
-2. Enter public key
-3. Validate document integrity
-
----
-
 # 🎯 Use Cases
 
 * Demonstrating **digital signature concepts**
@@ -170,6 +117,31 @@ http://127.0.0.1:5000
 
 
 ---
+---
+
+# 🛠 Tech Stack
+
+**Backend**
+
+* Python
+* Flask
+
+**Cryptography Concepts**
+
+* SHA-256 Hashing
+* Asymmetric Key Concept
+* Digital Signature Workflow
+
+**Frontend**
+
+* HTML
+* CSS
+* JavaScript
+
+**Security**
+
+* Encrypted Vault Storage
+
 
 # 📚 Educational Purpose
 
