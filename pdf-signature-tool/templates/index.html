@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure PDF Signature System</title>
+
+<link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+
+<div class="background-grid"></div>
+
+<nav class="navbar">
+<div class="logo">CryptoSeal</div>
+</nav>
+
+<header class="hero">
+
+<h1>Digital Signature Verification System</h1>
+
+<p>
+Securely sign and verify documents using cryptographic hashing and asymmetric encryption.
+</p>
+
+<div class="hero-buttons">
+<button onclick="focusSign()">Sign Document</button>
+<button onclick="focusVerify()">Verify Document</button>
+</div>
+
+</header>
+
+<div class="workspace">
+
+<!-- SIGN PANEL -->
+
+<div id="signPanel" class="panel active">
+
+<h2>Sign Document</h2>
+
+<form action="/sign" method="POST" enctype="multipart/form-data">
+
+<input type="file" name="file" required>
+
+<button type="submit">Generate Signature</button>
+
+</form>
+
+{% if key_id %}
+
+<div class="keyBox">
+
+<h3>Generated Public Key</h3>
+
+<div class="copyRow">
+
+<textarea id="publicKey" readonly>{{key_id}}</textarea>
+
+<button onclick="copyKey()">Copy</button>
+
+</div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+<!-- VERIFY PANEL -->
+
+<div id="verifyPanel" class="panel blurred">
+
+<h2>Verify Document</h2>
+
+<form action="/verify" method="POST" enctype="multipart/form-data">
+
+<input type="file" name="file" required>
+
+<textarea name="key_id" placeholder="Paste Public Key ID here" required></textarea>
+
+<button type="submit">Verify Document</button>
+
+</form>
+
+</div>
+
+</div>
+
+{% if message %}
+
+<div class="result {{status}}">
+<h3>{{message}}</h3>
+</div>
+
+{% endif %}
+
+<script>
+
+function focusSign(){
+
+document.getElementById("signPanel").classList.remove("blurred")
+document.getElementById("signPanel").classList.add("active")
+
+document.getElementById("verifyPanel").classList.add("blurred")
+document.getElementById("verifyPanel").classList.remove("active")
+
+}
+
+function focusVerify(){
+
+document.getElementById("verifyPanel").classList.remove("blurred")
+document.getElementById("verifyPanel").classList.add("active")
+
+document.getElementById("signPanel").classList.add("blurred")
+document.getElementById("signPanel").classList.remove("active")
+
+}
+
+function copyKey(){
+
+let text=document.getElementById("publicKey")
+
+text.select()
+
+navigator.clipboard.writeText(text.value)
+
+}
+
+{% if active == "verify" %}
+focusVerify()
+{% else %}
+focusSign()
+{% endif %}
+
+</script>
+
+</body>
+
+</html>
