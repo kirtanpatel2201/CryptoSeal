@@ -1,0 +1,16 @@
+{
+  "name": "cryptoseal",
+  "version": "1.0.0",
+  "description": "CryptoSeal - Secure Cryptographic Processing",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'No build process needed for static site'",
+    "dev": "echo 'Static site - use a local server'"
+  },
+  "keywords": ["cryptography", "security", "steganography"],
+  "author": "Kirtan Patel",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/speed-insights": "^1.0.12"
+  }
+}
