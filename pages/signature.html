@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Signature | CryptoSeal</title>
     <meta name="description" content="Secure local Document Signing and Verification using WebCrypto API">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; font-src 'self' file:; img-src 'self' file: data: blob:; frame-src 'self' file: blob:; connect-src 'self' file:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; font-src 'self' file:; img-src 'self' file: data: blob:; frame-src 'self' file: blob:; connect-src 'self' file: https://vitals.vercel-insights.com;">
     <link rel="preload" href="../css/materialicons.ttf" as="font" type="font/ttf" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/style.css">
 
@@ -179,5 +179,9 @@
 
     <script src="../js/core/utils.js"></script>
     <script src="../js/modules/signature.js"></script>
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
