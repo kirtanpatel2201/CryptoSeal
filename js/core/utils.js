@@ -61,7 +61,7 @@ function showToast(message, type = 'success') {
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 400);
-    }, 3000);
+    }, 4000);
 }
 
 // 4. Binary Array Utilities (Optimized for EOF payloads)

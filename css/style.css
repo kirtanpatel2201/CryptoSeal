@@ -1083,9 +1083,9 @@ input[readonly] {
 .toast-error .material-icons { color: var(--error); }
 
 input[readonly], textarea[readonly] {
-    color: #fbbf24 !important; /* Cyberpunk Amber for high visibility */
+    color: #ffffff !important;
     font-family: 'Fira Code', monospace;
     font-weight: 600;
     letter-spacing: 0.5px;
-    text-shadow: 0 0 4px rgba(251, 191, 36, 0.2);
+    text-shadow: none;
 }
