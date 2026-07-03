@@ -93,14 +93,20 @@ dropZoneSign.addEventListener('drop', (e) => {
     e.preventDefault();
     dropZoneSign.classList.remove('dragover');
     if (e.dataTransfer.files.length) {
-        signFile = e.dataTransfer.files[0];
-        updateSignUI();
+        const file = e.dataTransfer.files[0];
+        if (validateFileSize(file)) {
+            signFile = file;
+            updateSignUI();
+        }
     }
 });
 fileInputSign.addEventListener('change', (e) => {
     if (e.target.files.length) {
-        signFile = e.target.files[0];
-        updateSignUI();
+        const file = e.target.files[0];
+        if (validateFileSize(file)) {
+            signFile = file;
+            updateSignUI();
+        }
     }
 });
 removeFileSignBtn.addEventListener('click', () => {
@@ -227,10 +233,16 @@ dropZoneVerifyPdf.addEventListener('dragleave', () => dropZoneVerifyPdf.classLis
 dropZoneVerifyPdf.addEventListener('drop', (e) => {
     e.preventDefault();
     dropZoneVerifyPdf.classList.remove('dragover');
-    if (e.dataTransfer.files.length) { verifyPdfFile = e.dataTransfer.files[0]; updateVerifyUI(); }
+    if (e.dataTransfer.files.length) { 
+        const file = e.dataTransfer.files[0];
+        if (validateFileSize(file)) { verifyPdfFile = file; updateVerifyUI(); } 
+    }
 });
 fileInputVerifyPdf.addEventListener('change', (e) => {
-    if (e.target.files.length) { verifyPdfFile = e.target.files[0]; updateVerifyUI(); }
+    if (e.target.files.length) { 
+        const file = e.target.files[0];
+        if (validateFileSize(file)) { verifyPdfFile = file; updateVerifyUI(); } 
+    }
 });
 removeFileVerifyPdfBtn.addEventListener('click', () => { verifyPdfFile = null; resultVerify.classList.add('hidden'); updateVerifyUI(); });
 inputVerifyPubkey.addEventListener('input', updateVerifyUI);

@@ -7,6 +7,16 @@ function safeText(str) {
     return div.innerHTML;
 }
 
+// 1.5 File Size Validation (500MB Limit)
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+function validateFileSize(file) {
+    if (file && file.size > MAX_FILE_SIZE) {
+        showToast("File is too large. Please keep files under 500MB to prevent memory exhaustion.", "error");
+        return false;
+    }
+    return true;
+}
+
 // 2. Base64 Utilities (Fixes window.atob errors)
 function bufferToBase64(buffer) {
     let binary = '';

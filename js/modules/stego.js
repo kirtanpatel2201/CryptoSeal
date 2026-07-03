@@ -132,10 +132,16 @@ dropZoneEmbed.addEventListener('dragover', (e) => { e.preventDefault(); dropZone
 dropZoneEmbed.addEventListener('dragleave', () => dropZoneEmbed.classList.remove('dragover'));
 dropZoneEmbed.addEventListener('drop', (e) => {
     e.preventDefault(); dropZoneEmbed.classList.remove('dragover');
-    if (e.dataTransfer.files.length) { embedFile = e.dataTransfer.files[0]; updateEmbedUI(); }
+    if (e.dataTransfer.files.length) { 
+        const file = e.dataTransfer.files[0];
+        if (validateFileSize(file)) { embedFile = file; updateEmbedUI(); } 
+    }
 });
 fileInputEmbed.addEventListener('change', (e) => {
-    if (e.target.files.length) { embedFile = e.target.files[0]; updateEmbedUI(); }
+    if (e.target.files.length) { 
+        const file = e.target.files[0];
+        if (validateFileSize(file)) { embedFile = file; updateEmbedUI(); } 
+    }
 });
 removeFileEmbedBtn.addEventListener('click', () => { embedFile = null; resultEmbed.classList.add('hidden'); updateEmbedUI(); });
 inputStegoMessage.addEventListener('input', updateEmbedUI);
@@ -146,10 +152,16 @@ dropZoneSecret.addEventListener('dragover', (e) => { e.preventDefault(); dropZon
 dropZoneSecret.addEventListener('dragleave', () => dropZoneSecret.classList.remove('dragover'));
 dropZoneSecret.addEventListener('drop', (e) => {
     e.preventDefault(); dropZoneSecret.classList.remove('dragover');
-    if (e.dataTransfer.files.length) { secretFile = e.dataTransfer.files[0]; updateEmbedUI(); }
+    if (e.dataTransfer.files.length) { 
+        const file = e.dataTransfer.files[0];
+        if (validateFileSize(file)) { secretFile = file; updateEmbedUI(); } 
+    }
 });
 fileInputSecret.addEventListener('change', (e) => {
-    if (e.target.files.length) { secretFile = e.target.files[0]; updateEmbedUI(); }
+    if (e.target.files.length) { 
+        const file = e.target.files[0];
+        if (validateFileSize(file)) { secretFile = file; updateEmbedUI(); } 
+    }
 });
 removeSecretBtn.addEventListener('click', () => { secretFile = null; updateEmbedUI(); });
 
@@ -286,10 +298,16 @@ dropZoneExtract.addEventListener('dragover', (e) => { e.preventDefault(); dropZo
 dropZoneExtract.addEventListener('dragleave', () => dropZoneExtract.classList.remove('dragover'));
 dropZoneExtract.addEventListener('drop', (e) => {
     e.preventDefault(); dropZoneExtract.classList.remove('dragover');
-    if (e.dataTransfer.files.length) { extractFile = e.dataTransfer.files[0]; updateExtractUI(); }
+    if (e.dataTransfer.files.length) { 
+        const file = e.dataTransfer.files[0];
+        if (validateFileSize(file)) { extractFile = file; updateExtractUI(); } 
+    }
 });
 fileInputExtract.addEventListener('change', (e) => {
-    if (e.target.files.length) { extractFile = e.target.files[0]; updateExtractUI(); }
+    if (e.target.files.length) { 
+        const file = e.target.files[0];
+        if (validateFileSize(file)) { extractFile = file; updateExtractUI(); } 
+    }
 });
 removeFileExtractBtn.addEventListener('click', () => { extractFile = null; resultExtract.classList.add('hidden'); updateExtractUI(); });
 inputStegoKey.addEventListener('input', updateExtractUI);
@@ -402,8 +420,12 @@ btnExtract.addEventListener('click', async () => {
             const downloadBtn = document.createElement('a');
             downloadBtn.className = 'primary-btn';
             downloadBtn.style.textDecoration = 'none';
-            downloadBtn.style.display = 'inline-block';
-            downloadBtn.style.marginTop = '1rem';
+            downloadBtn.style.display = 'flex';
+            downloadBtn.style.alignItems = 'center';
+            downloadBtn.style.justifyContent = 'center';
+            downloadBtn.style.gap = '0.5rem';
+            downloadBtn.style.margin = '1.5rem auto 0 auto';
+            downloadBtn.style.width = 'fit-content';
             downloadBtn.href = activeExtractUrl;
             downloadBtn.download = safeText(nameStr);
             downloadBtn.innerHTML = `<span class="material-icons">download</span> Download Securely`;
