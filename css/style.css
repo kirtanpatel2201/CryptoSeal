@@ -1089,3 +1089,37 @@ input[readonly], textarea[readonly] {
     letter-spacing: 0.5px;
     text-shadow: none;
 }
+
+/* --- Result Box Styling (Breathe Room) --- */
+.result-box {
+    margin-top: 2rem;
+    padding: 2.5rem;
+    background: rgba(10, 10, 15, 0.4);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+.success-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.success-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+.result-box .input-group {
+    margin: 0 !important;
+}
+.result-box .warning-text {
+    margin: 0 !important;
+    justify-content: center;
+}
+.result-box .primary-btn {
+    margin-top: 1rem !important;
+}
