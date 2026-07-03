@@ -1038,3 +1038,54 @@ input[readonly] {
     .home-cards-grid { grid-template-columns: 1fr; }
     .tool-wrapper { padding: 1.5rem 1rem; display: block; }
 }
+
+/* --- Added UI Enhancements --- */
+.warning-text {
+    color: var(--error);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+.warning-text .material-icons {
+    font-size: 1.1rem;
+}
+
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(10, 10, 15, 0.95);
+    border: 1px solid var(--border-glass);
+    color: var(--text-primary);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 240, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+.toast-success { border-bottom: 2px solid var(--success); }
+.toast-success .material-icons { color: var(--success); }
+.toast-error { border-bottom: 2px solid var(--error); }
+.toast-error .material-icons { color: var(--error); }
+
+input[readonly], textarea[readonly] {
+    color: #fbbf24 !important; /* Cyberpunk Amber for high visibility */
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 4px rgba(251, 191, 36, 0.2);
+}
