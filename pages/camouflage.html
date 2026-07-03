@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoSeal | Image Camouflage</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; font-src 'self' file:; img-src 'self' file: data: blob:; frame-src 'self' file: blob:; connect-src 'self' file:;">
+    <link rel="preload" href="../css/materialicons.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/style.css">
+
+
+    <script src="../lib/pako.min.js"></script>
+    <script src="../lib/UPNG.min.js"></script>
+</head>
+<body class="module-layout">
+    
+    <!-- UNIFIED GLOBAL HEADER -->
+    <header class="sv-header">
+        <div class="sv-header-left">
+            <a href="../index.html" class="header-logo">
+                <h2>CryptoSeal</h2>
+            </a>
+            <span class="tagline">Trust Engineered into Every Byte.</span>
+        </div>
+        <div class="header-actions">
+            <button class="faq-btn"><span class="material-icons">help_outline</span> FAQs</button>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- FIXED SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-nav">
+                <span class="nav-label">Modules</span>
+                <a href="signature.html" class="nav-link">
+                    <span class="material-icons">draw</span>
+                    Digital Signature
+                </a>
+                <a href="stego.html" class="nav-link">
+                    <span class="material-icons">visibility_off</span> Steganography
+                </a>
+                <a href="camouflage.html" class="nav-link active">
+                    <span class="material-icons">wallpaper</span> Image Camouflage
+                </a>
+            </div>
+
+            <div class="terminal-widget">
+                <div class="terminal-header">
+                    Live Global Feed <span class="status-dot"></span>
+                </div>
+                <div class="terminal-content" id="terminal-content">
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN WORKSPACE -->
+        <div class="main-workspace animate-fade-in">
+
+        <div class="hero-selection animate-fade-in" id="hero-selection" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 2rem;">
+            <div class="hero-title-group" style="text-align: center; margin-bottom: 4rem;">
+                <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">Select Camouflage Engine</h1>
+                <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Choose the cryptographic injection method for your image payload.</p>
+            </div>
+            
+            <div class="hero-cards-container" style="display: flex; gap: 2rem; max-width: 900px; width: 100%;">
+                
+                <!-- EOF Engine -->
+                <div class="home-card hero-engine-card" id="select-engine-eof" style="cursor: pointer; flex: 1;">
+                    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Standard Injection</h2>
+                    <div style="display: inline-block; padding: 0.25rem 0.75rem; background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 4px; color: var(--cyan); font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">Unlimited Capacity</div>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">Injects heavily encrypted AES-256 data at the End-of-File binary marker of the image. The file size will increase relative to the payload size. Supports JPEG, PNG, GIF, BMP.</p>
+                </div>
+
+                <!-- LSB Engine -->
+                <div class="home-card hero-engine-card" id="select-engine-lsb" style="cursor: pointer; flex: 1;">
+                    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Deep Pixel Stealth</h2>
+                    <div style="display: inline-block; padding: 0.25rem 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; color: var(--success); font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">Zero Traces</div>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">Microscopically alters the RGBA color channels (Least Significant Bits) of the carrier image to weave encrypted data directly into pixels. <strong>Zero file size change.</strong> Upload any image type and it will be securely converted to uncompressed PNG in RAM.</p>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="tool-wrapper hidden" id="stego-workspace">
+            <div class="tool-container">
+                <div class="tool-title-group" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <button id="btn-back-hero" class="icon-btn" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.5rem; color: var(--text-secondary); cursor: pointer; transition: 0.2s;"><span class="material-icons">arrow_back</span></button>
+                    <h1 style="margin: 0;"><span class="material-icons" id="workspace-engine-icon">wallpaper</span> <span id="workspace-engine-title">Image Camouflage</span></h1>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active" id="tab-embed">Embed Data</button>
+                    <button class="tab-btn" id="tab-extract">Extract Data</button>
+                </div>
+
+                <!-- EMBED TAB -->
+                <section class="tab-content active" id="content-embed">
+                    <div class="glass-panel">
+                        
+                        <div class="drop-zone" id="drop-zone-embed">
+                                <span class="material-icons drop-icon">image</span>
+                                <p class="drop-text">Drag & Drop carrier image here</p>
+                                <p class="drop-subtext">or click to browse</p>
+                                <input type="file" id="file-input-embed" accept="image/*" hidden>
+                            </div>
+                            
+                            <div class="file-info hidden" id="file-info-embed" style="position: relative;">
+                                <span class="material-icons">image</span>
+                                <span class="filename" id="filename-embed">image.jpg</span>
+                                <button class="remove-btn" id="remove-file-embed" title="Remove File"><span class="material-icons">close</span></button>
+                                
+                                <div id="conversion-warning" class="hidden" style="position: absolute; bottom: calc(100% + 12px); left: 0; width: 100%; z-index: 50; padding: 0.75rem; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 171, 0, 0.5); border-radius: 8px; color: var(--text-primary); font-size: 0.85rem; display: flex; align-items: flex-start; gap: 0.5rem; box-shadow: 0 -4px 25px rgba(0,0,0,0.5);">
+                                    <!-- The down arrow -->
+                                    <div style="position: absolute; bottom: -7px; left: 24px; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 7px solid rgba(255, 171, 0, 0.5);"></div>
+                                    <div style="position: absolute; bottom: -5px; left: 25px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid rgba(15, 23, 42, 0.95);"></div>
+                                    
+                                    <span class="material-icons" style="font-size: 1.1rem; flex-shrink: 0; color: var(--warning);">warning</span>
+                                    <div>
+                                        <strong style="color: var(--warning);">Auto-Conversion Notice:</strong> You uploaded a compressed image (e.g. JPEG). To preserve the microscopic pixel data required for Deep Stealth, this image will be safely auto-converted to a lossless PNG in RAM before embedding.<br><br>
+                                        <em style="color: var(--text-muted);">Note: The final file size will be significantly larger than the original.</em>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="capacity-indicator" class="hidden" style="margin-top: 1rem; padding: 0.5rem 1rem; background: rgba(0,0,0,0.3); border-radius: 4px; border: 1px solid var(--border-glass); text-align: center;">
+                                <span style="color: var(--text-secondary); font-size: 0.85rem;">Available Payload Capacity: </span>
+                                <span id="capacity-value" style="color: var(--cyan); font-weight: bold; font-family: monospace; font-size: 0.9rem;">Calculating...</span>
+                            </div>
+
+                            <label style="display: block; color: var(--text-muted); font-size: 0.85rem; margin-top: 1.5rem; margin-bottom: 0.5rem; font-weight: 500;">Select Payload Format</label>
+                            <div class="segmented-control" style="display: flex; background: rgba(0,0,0,0.3); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--border-glass); margin-bottom: 1.5rem;">
+                                <label class="segment-label active" id="lbl-payload-text" style="flex: 1; text-align: center; padding: 0.5rem; cursor: pointer; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: 0.2s; background: rgba(255,255,255,0.08); color: #fff;">
+                                    <input type="radio" name="payload_type" value="text" checked hidden>
+                                    📝 Text Message
+                                </label>
+                                <label class="segment-label" id="lbl-payload-file" style="flex: 1; text-align: center; padding: 0.5rem; cursor: pointer; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: 0.2s; color: var(--text-muted);">
+                                    <input type="radio" name="payload_type" value="file" hidden>
+                                    📁 Secret File
+                                </label>
+                            </div>
+
+                            <div class="input-group" id="payload-text-content">
+                                <label for="input-stego-message">Secret Message</label>
+                                <input type="text" id="input-stego-message" placeholder="Type the message to hide...">
+                            </div>
+
+                            <div class="input-group hidden" id="payload-file-content">
+                                <div class="drop-zone" id="drop-zone-secret-file" style="min-height: 120px;">
+                                    <span class="material-icons drop-icon" style="font-size: 2rem;">file_present</span>
+                                    <p class="drop-text" style="font-size: 0.9rem;">Drag & Drop secret file</p>
+                                    <input type="file" id="file-input-secret" hidden>
+                                </div>
+                                <div class="file-info hidden" id="file-info-secret">
+                                    <span class="material-icons text-cyan">file_present</span>
+                                    <span class="filename" id="filename-secret">secret.file</span>
+                                    <button class="remove-btn" id="remove-secret-file" title="Remove File"><span class="material-icons">close</span></button>
+                                </div>
+                            </div>
+
+                        <button class="primary-btn" id="btn-embed" disabled>
+                            <span class="material-icons">lock</span> Encrypt & Camouflage
+                        </button>
+                        
+                        <div class="result-box hidden animate-slide-up" id="result-embed">
+                            <div class="success-header">
+                                <span class="material-icons text-success">check_circle</span>
+                                <h3 class="text-success">Camouflage Complete</h3>
+                            </div>
+                            
+                            <div class="result-detail">
+                                <span class="detail-label">Decryption Key:</span>
+                                <div class="key-box">
+                                    <input type="text" id="output-embed-key" readonly>
+                                    <button class="icon-btn" id="copy-stego-key-btn" title="Copy Key">
+                                        <span class="material-icons">content_copy</span>
+                                    </button>
+                                </div>
+                                <p class="help-text text-warning"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">warning</span> Save this key. It is required to extract the data.</p>
+                            </div>
+
+                            <div class="action-row">
+                                <a href="#" class="primary-btn" id="download-stego-btn">
+                                    <span class="material-icons">download</span> Download Camouflaged Image
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- EXTRACT TAB -->
+                <section class="tab-content hidden" id="content-extract">
+                    <div class="glass-panel">
+                        <div class="drop-zone" id="drop-zone-extract">
+                            <span class="material-icons drop-icon">image_search</span>
+                            <p class="drop-text">Drag & Drop camouflaged image here</p>
+                            <p class="drop-subtext">or click to browse</p>
+                            <input type="file" id="file-input-extract" accept="image/*" hidden>
+                        </div>
+                        
+                        <div class="file-info hidden" id="file-info-extract">
+                            <span class="material-icons">image</span>
+                            <span class="filename" id="filename-extract">camouflaged.png</span>
+                            <button class="remove-btn" id="remove-file-extract" title="Remove File"><span class="material-icons">close</span></button>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="input-stego-key">Decryption Key</label>
+                            <input type="text" id="input-stego-key" placeholder="Enter 44-character Base64 key">
+                        </div>
+                        
+                        <button class="primary-btn" id="btn-extract" disabled>
+                            <span class="material-icons">lock_open</span> Decrypt & Extract
+                        </button>
+                        
+                        <div class="result-box hidden animate-slide-up" id="result-extract">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <div id="toast-container"></div>
+
+    <script src="../js/core/utils.js"></script>
+    <script src="../js/modules/camouflage.js"></script>
+</body>
+</html>

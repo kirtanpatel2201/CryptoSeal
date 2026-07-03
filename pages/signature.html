@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Signature | CryptoSeal</title>
+    <meta name="description" content="Secure local Document Signing and Verification using WebCrypto API">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; font-src 'self' file:; img-src 'self' file: data: blob:; frame-src 'self' file: blob:; connect-src 'self' file:;">
+    <link rel="preload" href="../css/materialicons.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/style.css">
+
+
+</head>
+<body class="module-layout">
+    
+    <!-- UNIFIED GLOBAL HEADER -->
+    <header class="sv-header">
+        <div class="sv-header-left">
+            <a href="../index.html" class="header-logo">
+                <h2>CryptoSeal</h2>
+            </a>
+            <span class="tagline">Trust Engineered into Every Byte.</span>
+        </div>
+        <div class="header-actions">
+            <button class="faq-btn"><span class="material-icons">help_outline</span> FAQs</button>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- FIXED SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-nav">
+                <span class="nav-label">Modules</span>
+                <a href="signature.html" class="nav-link active">
+                    <span class="material-icons">draw</span>
+                    Digital Signature
+                </a>
+                <a href="stego.html" class="nav-link">
+                    <span class="material-icons">visibility_off</span> Steganography
+                </a>
+                <a href="camouflage.html" class="nav-link">
+                    <span class="material-icons">wallpaper</span> Image Camouflage
+                </a>
+            </div>
+
+            <!-- CYBERPUNK TERMINAL WIDGET -->
+            <div class="terminal-widget">
+                <div class="terminal-header">
+                    Live Global Feed <span class="status-dot"></span>
+                </div>
+                <div class="terminal-content" id="terminal-content">
+                    <!-- Javascript will inject scrolling lines here -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN WORKSPACE -->
+        <div class="main-workspace animate-fade-in">
+
+        <div class="tool-wrapper">
+            <div class="tool-container">
+                <div class="tool-title-group" style="text-align: center; margin-bottom: 2rem; display: flex; flex-direction: column; align-items: center;">
+                    <h1 style="margin-bottom: 0.5rem;"><span class="material-icons">draw</span> Digital Signature</h1>
+                    <p style="color: var(--text-secondary); font-size: 1.05rem; display: block; width: 100%;">Origin proven. Integrity preserved. Trust remains local.</p>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active" id="tab-sign">Sign Document</button>
+                    <button class="tab-btn" id="tab-verify">Verify Document</button>
+                </div>
+
+                <!-- SIGN TAB -->
+                <section class="tab-content active" id="content-sign">
+                    <div class="glass-panel">
+                        
+                        <div class="drop-zone" id="drop-zone-sign">
+                            <span class="material-icons drop-icon">upload_file</span>
+                            <p class="drop-text">Drag & Drop any file here</p>
+                            <p class="drop-subtext">or click to browse</p>
+                            <input type="file" id="file-input-sign" hidden>
+                        </div>
+
+                        <div class="file-info hidden" id="file-info-sign">
+                            <span class="material-icons" style="color: var(--text-muted);">description</span>
+                            <span class="filename" id="filename-sign">filename.pdf</span>
+                            <button class="remove-btn" id="remove-file-sign" title="Remove File"><span class="material-icons">close</span></button>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="input-sign-message">Signature Identity (e.g. Username)</label>
+                            <input type="text" id="input-sign-message" placeholder="e.g., AliceSmith123">
+                        </div>
+
+                        <button class="primary-btn" id="btn-sign" disabled>
+                            <span class="material-icons">draw</span> Sign Document
+                        </button>
+
+                        <div class="result-box hidden" id="result-sign">
+                            <div class="success-header">
+                                <span class="material-icons text-success">check_circle</span>
+                                <h3 class="text-success">Document Signed Successfully</h3>
+                            </div>
+                            
+                            <div class="input-group" style="margin-top: 1rem; margin-bottom: 0.25rem;">
+                                <label for="output-public-key">Your Public Key (Share this for verification)</label>
+                                <div class="input-with-icon">
+                                    <input type="text" id="output-public-key" readonly>
+                                    <button id="copy-pub-key-btn" class="compact-copy-btn" title="Copy Key">
+                                        <span class="material-icons">content_copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="warning-text"><span class="material-icons">info</span> Anyone verifying this PDF will need this exact key.</p>
+                            
+                            <div class="alert-warning" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+                                <span class="material-icons">warning</span>
+                                <div class="alert-warning-content">
+                                    <h4>File Integrity Warning</h4>
+                                    <p>If you plan to share this file via a platform that recompresses media (like WhatsApp, Twitter, or Discord), the embedded signature will be destroyed. Always share signed files via platforms that preserve original bytes (e.g., Email, ZIP, Google Drive).</p>
+                                </div>
+                            </div>
+                            
+                            <a id="download-package-btn" class="download-btn">
+                                <span class="material-icons">download</span> Download Signed Document
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VERIFY TAB -->
+                <section class="tab-content hidden" id="content-verify">
+                    <div class="glass-panel">
+
+
+                        <p class="panel-desc">Check the mathematical authenticity of a signed file using its corresponding Public Key.</p>
+                        
+                        <div class="drop-zone" id="drop-zone-verify-pdf">
+                            <span class="material-icons drop-icon">verified_user</span>
+                            <p class="drop-text">Drag & Drop the Signed File</p>
+                            <p class="drop-subtext">or click to browse</p>
+                            <input type="file" id="file-input-verify-pdf" hidden>
+                        </div>
+
+                        <div class="file-info hidden" id="file-info-verify-pdf">
+                            <span class="material-icons" style="color: var(--text-muted);">description</span>
+                            <span class="filename" id="filename-verify-pdf">filename.pdf</span>
+                            <button class="remove-btn" id="remove-file-verify-pdf" title="Remove File"><span class="material-icons">close</span></button>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="input-verify-pubkey">Public Key</label>
+                            <input type="password" id="input-verify-pubkey" placeholder="Paste the exact Public Key here...">
+                        </div>
+
+                        <button class="primary-btn" id="btn-verify" disabled>
+                            <span class="material-icons">verified</span> Verify Document
+                        </button>
+
+                        <div class="result-box hidden" id="result-verify">
+                            <!-- Dynamic Content -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- SIMPLIFIED FOOTER -->
+        <div class="cv-footer">
+            <span>Developed by Kirtan Patel</span>
+            <span class="cv-footer-divider">|</span>
+            <a href="https://github.com/kirtanpatel2201" target="_blank" rel="noreferrer" class="cv-footer-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                <span>GitHub</span>
+            </a>
+        </div>
+
+    </div> <!-- End Main Workspace -->
+    </div> <!-- End Layout Wrapper -->
+
+    <script src="../js/core/utils.js"></script>
+    <script src="../js/modules/signature.js"></script>
+</body>
+</html>
