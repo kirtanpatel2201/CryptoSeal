@@ -4,7 +4,7 @@
 
 **Privacy-first cryptographic toolkit for digital signatures and encrypted steganography.**
 
-**[🔥 View Live Application](https://crypto-seal-nine.vercel.app/)**
+**[🔥 View Live Application](https://cryptosealx.vercel.app/)**
 
 <br>
 
