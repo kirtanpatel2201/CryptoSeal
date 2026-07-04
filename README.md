@@ -104,24 +104,25 @@ sequenceDiagram
 ```
 
 ### 3. Steganography Engine B: Deep Pixel LSB Stealth
-A highly evasive engine that hides data inside the pixel color channels of images. It automatically standardizes images to PNG in memory to prevent lossy compression from destroying the payload.
+A highly evasive engine that hides data inside the pixel color channels of images. To avoid the destructive alpha-premultiplication issues inherent to the native HTML5 Canvas API, this engine utilizes `UPNG.js` for pure binary manipulation of the image array buffers. If a non-PNG image is uploaded, the Canvas is only temporarily used to losslessly convert the image to PNG before binary injection.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User
     participant WebCrypto as Browser WebCrypto API
-    participant Canvas as HTML5 Canvas API
+    participant UPNG as UPNG.js (Binary Engine)
 
     User->>WebCrypto: Select Image Carrier & Secret Payload
-    WebCrypto->>Canvas: Draw Image & Extract Pixel Data
-    Canvas->>Canvas: Convert to image/png (Lossless)
+    WebCrypto->>WebCrypto: Auto-convert to PNG (if needed)
     rect rgba(16, 185, 129, 0.1)
     WebCrypto->>WebCrypto: Encrypt Payload (AES-256-GCM)
-    WebCrypto->>Canvas: Inject "STEGO_DATA_START" + IV + Ciphertext
-    Canvas->>Canvas: Distribute bits into RGB LSB (3 bits/pixel)
+    WebCrypto->>UPNG: Send PNG Blob & Ciphertext
+    UPNG->>UPNG: Decode ArrayBuffer to RGBA8
+    UPNG->>UPNG: Distribute bits into RGB LSB (3 bits/pixel)
+    UPNG->>UPNG: Encode back to PNG Blob
     end
-    Canvas-->>User: Download Stealth PNG
+    UPNG-->>User: Download Stealth PNG
 ```
 
 ## Cryptographic Specifications
