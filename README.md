@@ -150,8 +150,8 @@ CryptoSeal strictly adheres to authenticated, industry-standard cryptographic pr
 ## Security & Privacy
 CryptoSeal is designed for absolute privacy and operational security.
 
-- **Zero-Upload Architecture:** Files are read into memory using `ArrayBuffer` and processed entirely on the client side. No server backends exist.
-- **Absolute Isolation:** Zero external network requests during execution. All fonts and libraries are stored locally, enforced by a strict `default-src 'self'` Content Security Policy (CSP).
+- **Zero-Upload Architecture:** Files are read into memory using `ArrayBuffer` and processed entirely on the client side. No server backends exist for cryptographic processing.
+- **Client-Side Privacy with Infrastructure Analytics:** All fonts, libraries, and cryptographic operations are executed locally. The UI layer utilizes Vercel Web Analytics and Speed Insights exclusively for basic front-end performance monitoring, but your files and secrets never leave the browser.
 - **Volatile Key Management:** Private RSA keys and symmetric AES keys are generated dynamically in RAM and are permanently destroyed upon closing the browser tab.
 - **Timing Attack Resistance:** Cryptographic operations are powered natively by the browser's C++ WebCrypto implementation, mitigating JavaScript timing side-channels.
 
