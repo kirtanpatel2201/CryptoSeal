@@ -14,6 +14,9 @@
 - [Why CryptoSeal?](#why-cryptoseal)
 - [Feature Comparison](#feature-comparison)
 - [Architecture & Data Flow](#architecture--data-flow)
+  - [Digital Signature Mechanism](#1-digital-signature-mechanism)
+  - [Steganography Engine A: Standard EOF Injection](#2-steganography-engine-a-standard-eof-injection)
+  - [Steganography Engine B: Deep Pixel LSB Stealth](#3-steganography-engine-b-deep-pixel-lsb-stealth)
 - [Cryptographic Specifications](#cryptographic-specifications)
 - [Security & Privacy](#security--privacy)
 - [Threat Model](#threat-model)
@@ -53,96 +56,129 @@ CryptoSeal flips this model:
 | **Universal OS Support** | ✅ | ✅ | Varies |
 
 ## Architecture & Data Flow
-CryptoSeal utilizes End-of-File (EOF) binary manipulation to append cryptographic payloads without corrupting the original carrier file format.
 
-### Digital Signature Flow
+CryptoSeal implements three distinct cryptographic engines, each meticulously engineered to run natively within the browser's memory without reliance on external servers.
+
+### 1. Digital Signature Mechanism
+The signature engine appends a verifiable identity proof to any file using End-of-File (EOF) injection.
+
 ```mermaid
 sequenceDiagram
     autonumber
     actor User
-    participant Browser as WebCrypto API (Client)
+    participant WebCrypto as Browser WebCrypto API
+    participant Mem as Memory (Blob)
     
-    User->>Browser: Select Original File
+    User->>WebCrypto: Select File & Signer Name
     rect rgba(139, 92, 246, 0.1)
-    Browser->>Browser: Generate SHA-256 Digest
-    Browser->>Browser: Generate RSA-PSS Key Pair (2048-bit)
-    Browser->>Browser: Encrypt Hash with Private Key
+    WebCrypto->>WebCrypto: Hash File Buffer (SHA-256)
+    WebCrypto->>WebCrypto: Concatenate SHA-256 + UTF8(Signer Name)
+    WebCrypto->>WebCrypto: Generate RSA-PSS 2048-bit Key Pair
+    WebCrypto->>WebCrypto: Sign Concatenated Buffer (Salt: 32)
     end
-    Browser-->>User: Export Public Key (.pem)
-    Browser->>Browser: Append Signature to EOF
-    Browser-->>User: Download Signed File
+    WebCrypto->>Mem: Construct JSON: {name, base64_sig, timestamp}
+    Mem->>Mem: Append "SIG_DATA_START" + JSON to EOF
+    Mem-->>User: Download Signed File
+    WebCrypto-->>User: Export Public Key (JWK Base64)
 ```
 
-### Steganography Flow
+### 2. Steganography Engine A: Standard EOF Injection
+Designed for speed and universal file support, this engine injects AES-256-GCM encrypted payloads directly into the EOF structure of carrier files.
+
 ```mermaid
 sequenceDiagram
     autonumber
     actor User
-    participant Browser as WebCrypto API (Client)
+    participant WebCrypto as Browser WebCrypto API
+    participant Mem as Memory (Blob)
 
-    User->>Browser: Enter Secret Message
+    User->>WebCrypto: Input Secret (Text / File) & Carrier File
     rect rgba(245, 158, 11, 0.1)
-    Browser->>Browser: Generate CSPRNG 96-bit IV
-    Browser->>Browser: AES-256-GCM Encryption
-    Browser->>Browser: Construct Ciphertext Payload
-    Browser->>Browser: Inject Payload into Carrier File (EOF)
+    WebCrypto->>WebCrypto: Construct Payload (0x01 Text OR 0x02 File + MIME)
+    WebCrypto->>WebCrypto: Generate AES-256-GCM Key & 96-bit IV
+    WebCrypto->>WebCrypto: Encrypt Payload Buffer
     end
-    Browser-->>User: Download Secured File
+    WebCrypto->>Mem: Build Block: "STEGO_DATA_START" + IV (12b) + Ciphertext
+    Mem->>Mem: Append Block to Carrier File EOF
+    Mem-->>User: Download Secured File
+```
+
+### 3. Steganography Engine B: Deep Pixel LSB Stealth
+A highly evasive engine that hides data inside the pixel color channels of images. It automatically standardizes images to PNG in memory to prevent lossy compression from destroying the payload.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant WebCrypto as Browser WebCrypto API
+    participant Canvas as HTML5 Canvas API
+
+    User->>WebCrypto: Select Image Carrier & Secret Payload
+    WebCrypto->>Canvas: Draw Image & Extract Pixel Data
+    Canvas->>Canvas: Convert to image/png (Lossless)
+    rect rgba(16, 185, 129, 0.1)
+    WebCrypto->>WebCrypto: Encrypt Payload (AES-256-GCM)
+    WebCrypto->>Canvas: Inject "STEGO_DATA_START" + IV + Ciphertext
+    Canvas->>Canvas: Distribute bits into RGB LSB (3 bits/pixel)
+    end
+    Canvas-->>User: Download Stealth PNG
 ```
 
 ## Cryptographic Specifications
-CryptoSeal relies strictly on authenticated, industry-standard cryptographic primitives. 
 
-**RSA-PSS (Digital Signatures)**
+CryptoSeal strictly adheres to authenticated, industry-standard cryptographic primitives, specifically utilizing the W3C WebCrypto API.
+
+### **Digital Signatures (RSA-PSS)**
 - **Modulus Length:** `2048-bit`
 - **Digest Algorithm:** `SHA-256`
 - **Mask Generation Function:** `MGF1`
 - **Salt Length:** `32 bytes`
+- **Verification Integrity:** The signature target is a strict concatenation of `SHA-256(Original_File_Buffer) + UTF8_Bytes(Signer_Message)`. This prevents signature portability attacks.
+- **Data Marker:** `SIG_DATA_START`
 
-**AES-GCM (Steganography)**
-- **Key Length:** `256-bit`
-- **Initialization Vector (IV):** `96-bit`
-- **Authentication Tag:** `128-bit` (Implicit with GCM)
+### **Steganography (AES-GCM)**
+- **Algorithm:** `AES-GCM` (Galois/Counter Mode provides both confidentiality and data authenticity).
+- **Key Length:** `256-bit` (Symmetric).
+- **Initialization Vector (IV):** `96-bit` (`12 bytes`), generated securely via `crypto.getRandomValues`.
+- **Authentication Tag:** `128-bit` (Implicitly managed by the WebCrypto GCM implementation).
+- **Payload Headers:** 
+  - `0x01`: Denotes raw UTF-8 text payload.
+  - `0x02`: Denotes file payload, followed by MIME length, MIME string, filename length, filename string, and raw binary file data.
+- **Data Marker:** `STEGO_DATA_START`
 
 ## Security & Privacy
-CryptoSeal is designed for absolute privacy.
+CryptoSeal is designed for absolute privacy and operational security.
 
-- **No Uploads:** Files are read into memory using `ArrayBuffer` and processed entirely on the client.
-- **Absolute Isolation:** Zero external network requests. All fonts and libraries are stored locally, combined with a strict `default-src 'self'` Content Security Policy.
-- **Enterprise Edge Security:** Configured with `vercel.json` to enforce strict HSTS, Clickjacking protection (`X-Frame-Options DENY`), and rigid Permissions Policies.
-- **No Telemetry:** Zero tracking, analytics, or cookies.
-- **Volatile Keys:** Private keys are generated in RAM and destroyed upon closing the browser tab.
-- **Secure Implementation:** Powered natively by the W3C WebCrypto API (implemented in C++ by browser vendors), preventing side-channel JavaScript timing attacks.
+- **Zero-Upload Architecture:** Files are read into memory using `ArrayBuffer` and processed entirely on the client side. No server backends exist.
+- **Absolute Isolation:** Zero external network requests during execution. All fonts and libraries are stored locally, enforced by a strict `default-src 'self'` Content Security Policy (CSP).
+- **Volatile Key Management:** Private RSA keys and symmetric AES keys are generated dynamically in RAM and are permanently destroyed upon closing the browser tab.
+- **Timing Attack Resistance:** Cryptographic operations are powered natively by the browser's C++ WebCrypto implementation, mitigating JavaScript timing side-channels.
 
 > [!WARNING]
-> If a platform heavily modifies or compresses uploaded files (e.g., social media platforms, image optimizers, chat applications), the appended EOF payloads may be stripped. To preserve the signature or hidden data, share the modified files directly via email attachments, cloud drives, or ZIP archives.
+> If a platform heavily modifies or compresses uploaded files (e.g., social media platforms, image optimizers, chat applications), the appended EOF payloads or LSB pixel modifications will be permanently destroyed. To preserve the signature or hidden data, share the modified files directly via email attachments, cloud drives, or ZIP archives.
 
 ## Threat Model
 **CryptoSeal protects against:**
 - ✔ File modification and unauthorized tampering.
 - ✔ Man-in-the-middle (MITM) network interception (due to local processing).
 - ✔ Unauthorized disclosure of steganographic payloads.
-- ✔ Cryptographic brute-force (under modern classical computing).
+- ✔ Cryptographic brute-force (under modern classical computing parameters).
 
 **CryptoSeal DOES NOT protect against:**
 - ✖ Malware or keyloggers installed on the host operating system.
 - ✖ Compromised or malicious web browsers.
 - ✖ Physical access to the unencrypted carrier files.
-- ✖ Weak user-supplied passwords for AES key derivation.
 
 ## Technology Stack
 **Frontend**
 - HTML5 / Vanilla CSS3 (CSS Variables)
 - JavaScript ES6+
-- Lucide Icons (via SVG/Fonts)
+- HTML5 Canvas API (for LSB Pixel Manipulation)
 
 **Security & Processing**
 - `window.crypto.subtle` API
 - TextEncoder / TextDecoder
 - ArrayBuffer / Uint8Array Binary Manipulation
-
-**Deployment**
-- Static hosting optimized (Vercel)
 
 ## Project Structure
 ```text
@@ -199,16 +235,6 @@ CryptoSeal requires support for the modern WebCrypto API.
 | Microsoft Edge | 79+ | ✅ |
 | Safari | 11+ | ✅ |
 | Brave | 1.0+ | ✅ |
-
-## Roadmap
-**Planned Features & Priorities**
-- ✅ Robust EOF Binary Parsing
-- ✅ AES-GCM Implementation
-- ✅ RSA-PSS Implementation
-- ✅ LSB (Least Significant Bit) Deep Pixel Image Mode
-- 🔄 Drag and Drop Batch Processing
-- 🔄 Web Worker Integration (for non-blocking UI on large files)
-- 🔄 Post-Quantum Cryptographic Standards (NIST Lattice-based)
 
 ## License
 This project is licensed under the MIT License.
