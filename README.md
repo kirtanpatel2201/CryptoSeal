@@ -101,6 +101,7 @@ sequenceDiagram
     WebCrypto->>Mem: Build Block: "STEGO_DATA_START" + IV (12b) + Ciphertext
     Mem->>Mem: Append Block to Carrier File EOF
     Mem-->>User: Download Secured File
+    WebCrypto-->>User: Export AES Key (Base64)
 ```
 
 ### 3. Steganography Engine B: Deep Pixel LSB Stealth
@@ -123,6 +124,7 @@ sequenceDiagram
     UPNG->>UPNG: Encode back to PNG Blob
     end
     UPNG-->>User: Download Stealth PNG
+    WebCrypto-->>User: Export AES Key (Base64)
 ```
 
 ## Cryptographic Specifications
