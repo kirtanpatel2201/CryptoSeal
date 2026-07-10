@@ -1,7 +1,7 @@
 # 🛡️ CryptoSeal
 > **A Privacy-First Cryptographic Toolkit for Digital Signatures and Encrypted Steganography.**
 
-🔥 [View Live Application](https://crypto-seal-nine.vercel.app/)
+🔥 [View Live Application](https://cryptosealx.vercel.app/)
 
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![WebCrypto API](https://img.shields.io/badge/WebCrypto_API-4CAF50?style=for-the-badge)
