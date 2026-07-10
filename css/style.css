@@ -30,8 +30,8 @@
     /* Refined Deep Black Palette */
     --bg-deep: #050505;
     --bg-navy: #121212;
-    --panel-glass: rgba(18, 18, 18, 0.25);
-    --panel-hover: rgba(18, 18, 18, 0.4);
+    --panel-glass: rgba(22, 22, 24, 0.85);
+    --panel-hover: rgba(30, 30, 33, 0.95);
     --sidebar-glass: rgba(10, 10, 10, 0.5);
     
     /* Neon Accents */
@@ -619,10 +619,10 @@ body {
     transition: var(--transition);
 }
 
-.tab-btn:hover { color: var(--text-primary); }
+.tab-btn:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.04); }
 
 .tab-btn.active {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.12);
     color: var(--text-primary);
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
